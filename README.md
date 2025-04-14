@@ -1,73 +1,180 @@
-Project Philosophers - 42 School
-The Philosophers project is a classic exercise in concurrent programming, part of 42 School's curriculum, designed to teach synchronization, thread/process management, and resource allocation. Inspired by Edsger Dijkstra's "Dining Philosophers Problem", it challenges students to solve a scenario where multiple philosophers (threads/processes) share limited resources (forks) while avoiding deadlocks, data races, and starvation.
-Core Objective
+# Philosopher
 
-Simulate philosophers sitting around a circular table, alternating between eating, thinking, and sleeping. Each philosopher needs two forks (mutexes) to eat, placed between adjacent philosophers. The goal is to ensure all philosophers survive as long as possible, with no philosopher starving due to improper resource allocation.
-Key Requirements
+_Philosopher_ is a School 42 project that challenges you to solve the classic Dining Philosophers problem. The project focuses on handling concurrency, synchronization, and resource sharing using threads and synchronization primitives (e.g., mutexes, semaphores). Through this project, you will gain a deeper understanding of multi-threaded programming and the challenges of concurrent resource management.
 
-    Input Parameters:
-    The program accepts the following arguments:
+---
 
-        number_of_philosophers (e.g., 5 philosophers)
+## Table of Contents
 
-        time_to_die (ms a philosopher can survive without eating)
+- [Introduction](#introduction)
+- [Project Description](#project-description)
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [Author](#author)
+- [License](#license)
 
-        time_to_eat (ms spent eating)
+---
 
-        time_to_sleep (ms spent sleeping)
+## Introduction
 
-        [number_of_meals] (optional: stops simulation after all philosophers eat this many times).
+The _Philosopher_ project involves simulating the Dining Philosophers problem, a classical synchronization problem used to teach the complexities of concurrent programming. The goal is to develop a solution where multiple philosopher threads share limited resources (forks) without causing deadlocks or starvation. This project highlights efficient use of system resources and safe handling of thread interactions.
 
-    Rules:
+---
 
-        Each philosopher must pick up two forks to eat.
+## Project Description
 
-        Forks are shared with neighbors; no two philosophers can hold the same fork simultaneously.
+In this project, you will implement a simulation featuring a number of philosopher threads that alternate between thinking, eating, and sleeping. Each philosopher must pick up two forks (one from their left and one from their right) to eat. The simulation should abide by the following principles:
 
-        Prevent deadlocks (e.g., all philosophers grabbing one fork and waiting indefinitely).
+- **Deadlock Avoidance:** Ensure that philosophers do not end up in a state where each one is waiting for a fork indefinitely.
+- **Resource Management:** Efficiently manage access to shared resources using synchronization primitives.
+- **Timing and State Management:** Keep track of the philosophers' states (thinking, eating, sleeping) and enforce timing constraints to simulate real-life behavior.
+- **Graceful Termination:** Provide a mechanism to end the simulation cleanly after a set duration or upon meeting specific criteria.
 
-        Avoid starvation (philosophers must get fair access to forks).
+The solution should modularize components such as thread creation, synchronization handling, and output formatting.
 
-        Log state changes (e.g., [timestamp] X has taken a fork, ...is eating, ...died).
+---
 
-Technical Implementation
+## Features
 
-    Threads & Mutexes:
-    Each philosopher is a thread, and forks are represented by mutexes. Students use POSIX thread functions (pthread_create, pthread_detach, pthread_mutex_init, etc.) to manage concurrency.
+- **Concurrent Simulation:** Implements multithreading to simulate philosophers eating, sleeping, and thinking concurrently.
+- **Synchronization:** Uses mutexes or semaphores to manage access to shared resources, ensuring no deadlocks occur.
+- **Configurable Parameters:** Allows setting parameters such as the number of philosophers, time to die, time to eat, time to sleep, and the number of times each philosopher must eat.
+- **Status Output:** Provides real-time logs or status messages to monitor the simulation's progress.
+- **Clean Termination:** Ensures that all threads and resources are cleaned up properly when the simulation ends.
 
-    Synchronization:
+---
 
-        Timestamp precision with gettimeofday or clock_gettime.
+## Prerequisites
 
-        Delays between actions (e.g., a philosopher starts dying if they don’t eat within time_to_die).
+Before building and running _Philosopher_, ensure you have the following installed on your system:
+- A C compiler (such as `gcc` or `clang`)
+- [Make](https://www.gnu.org/software/make/) for build automation
+- A Unix/Linux development environment (macOS or Linux is preferred)
+- Basic knowledge of multithreading, synchronization, and system programming in C
 
-        Careful mutex locking/unlocking to prevent data races on shared resources (forks and output logs).
+---
 
-    Deadlock Prevention:
-    Solutions include:
+## Installation
 
-        Allowing only N-1 philosophers to eat simultaneously.
+Follow these steps to clone, build, and run the project on your machine:
 
-        Asymmetric fork pickup (even-numbered philosophers pick left first, odd-numbered pick right).
+1. **Clone the Repository:**
 
-Bonus Extensions
+   ```bash
+   git clone https://github.com/Kinglo25/Philosopher.git
+   cd Philosopher
+   ```
 
-Optional enhancements demonstrate deeper understanding:
+2. **Build the Project:**
 
-    Processes & Semaphores: Replace threads with processes (fork) and use semaphores (sem_open, sem_wait).
+   Use the provided Makefile to clean and compile the project:
 
-    Visualization: Display real-time status (e.g., terminal animations).
+   ```bash
+   make fclean
+   make
+   ```
 
-    Starvation-Free Guarantee: Ensure no philosopher waits indefinitely.
+3. **Verify the Build:**
 
-Learning Outcomes
+   Run the compiled executable to ensure it starts correctly:
 
-    Concurrency: Managing threads/processes and shared resources.
+   ```bash
+   ./philosopher [parameters]
+   ```
 
-    Synchronization: Using mutexes/semaphores to avoid race conditions.
+   Replace `[parameters]` with the desired simulation parameters (e.g., number of philosophers, time values, etc.).
 
-    Algorithm Design: Balancing efficiency and fairness in resource allocation.
+---
 
-    Debugging: Identifying issues like deadlocks with tools like valgrind or tsan.
+## Configuration
 
-Philosophers is a foundational project for understanding parallel computing, emphasizing precision, efficiency, and problem-solving under strict constraints. It prepares students for advanced topics in operating systems and real-time systems.
+_Philosopher_ can be configured by passing command-line arguments to specify the simulation parameters. Common parameters include:
+
+- **Number of Philosophers:** How many philosopher threads to create.
+- **Time to Die:** Maximum time (in milliseconds) a philosopher can go without eating before dying.
+- **Time to Eat:** Time (in milliseconds) a philosopher spends eating.
+- **Time to Sleep:** Time (in milliseconds) a philosopher spends sleeping.
+- **Meals Required:** (Optional) Number of times each philosopher must eat before the simulation ends.
+
+For example:
+
+```bash
+./philosopher 5 800 200 200 7
+```
+
+This command sets up a simulation with 5 philosophers, where the time to die is 800ms, time to eat is 200ms, time to sleep is 200ms, and each philosopher must eat 7 times.
+
+---
+
+## Usage
+
+Run the executable with the required parameters. During the simulation, the program outputs the state of each philosopher along with timestamps. The simulation runs until all philosophers have met the required conditions or until a philosopher dies.
+
+- **Example Command:**
+
+  ```bash
+  ./philosopher 5 800 200 200
+  ```
+
+- **Interpreting Output:**
+
+  The output logs will indicate when a philosopher starts eating, thinking, or sleeping, along with any status messages regarding forks and state changes.
+
+---
+
+## Troubleshooting
+
+- **Compilation Errors:**  
+  Verify that your development environment meets all prerequisites and that you have a compatible compiler installed.
+
+- **Deadlocks or Starvation:**  
+  If the simulation hangs or a philosopher never eats, check your implementation of mutexes or semaphores to ensure proper locking and unlocking.
+
+- **Unexpected Behavior:**  
+  Use debug prints or a debugger to trace thread execution and verify that timing parameters are correctly implemented.
+
+For additional assistance, consult the project guidelines, discuss with peers, or reach out to your instructors at School 42.
+
+---
+
+## Contributing
+
+Contributions are welcome to improve the _Philosopher_ project. To contribute:
+
+1. Fork the repository.
+2. Create a new branch for your modifications:
+   ```bash
+   git checkout -b feature/my-new-feature
+   ```
+3. Make your changes following School 42 coding standards.
+4. Commit your changes with clear, descriptive messages.
+5. Push your branch:
+   ```bash
+   git push origin feature/my-new-feature
+   ```
+6. Create a pull request for review.
+
+Your contributions help enhance the project and benefit the entire learning community.
+
+---
+
+## Author
+
+- **Kinglo25**  
+  [GitHub: Kinglo25](https://github.com/Kinglo25)
+
+Developed as part of the School 42 curriculum.
+
+---
+
+## License
+
+Distributed under the MIT License. See the `LICENSE` file for details.
+```
+
+---
